@@ -309,12 +309,22 @@
     const el = Object.fromEntries(
       [...document.querySelectorAll("[id]")].map(node => [node.id, node])
     );
+    let roundQuestions = createRound();
     let index = 0;
     let score = 0;
     let answered = false;
 
+    function createRound() {
+      const round = [...questions];
+      for (let i = round.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [round[i], round[j]] = [round[j], round[i]];
+      }
+      return round;
+    }
+
     function renderQuestion(moveFocus = false) {
-      const item = questions[index];
+      const item = roundQuestions[index];
       answered = false;
       el["mission-status"].textContent = "Awaiting input";
       el["question-number"].textContent = String(index + 1).padStart(2, "0");
@@ -351,7 +361,7 @@
       if (answered) return;
       answered = true;
       el["mission-status"].textContent = "Answer logged";
-      const item = questions[index];
+      const item = roundQuestions[index];
       const correct = selected === item.correct;
       if (correct) score++;
       el.score.textContent = score;
@@ -405,6 +415,7 @@
       else { index++; renderQuestion(true); }
     });
     el.restart.addEventListener("click", () => {
+      roundQuestions = createRound();
       index = 0;
       score = 0;
       el.score.textContent = "0";
