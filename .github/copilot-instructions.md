@@ -26,11 +26,12 @@ open index.html
 
 앱은 `index.html` 하나로 동작하는 정적 페이지다. `<style>`에 디자인, `<main>`에 화면 구조와 인라인 SVG, 본문 끝의 일반 `<script>`에 문제 데이터와 동작이 있다. 외부 리소스나 서버 호출 없이 실행된다.
 
-- `questions`의 각 항목은 `topic`, `question`, `answers`, `correct`, `fact`를 갖는다. `correct`는 `answers`의 0부터 시작하는 인덱스다. 현재 4지선다 10문항을 고정 순서로 출제한다.
+- `questions`의 각 항목은 `topic`, `question`, `answers`, `correct`, `fact`를 갖는다. `correct`는 `answers`의 0부터 시작하는 인덱스다. 현재 4지선다 10문항을 출제한다. `createRound()`는 원본 배열의 복사본을 Fisher–Yates 방식으로 섞으며, 첫 실행과 재시작 때만 `roundQuestions`를 생성한다. 화면 표시와 정답 판정은 회차 내내 같은 `roundQuestions`를 참조하고, 원본 문항과 선택지 순서는 유지한다.
 - `index`, `score`, `answered`가 진행 상태다. 메모리에서만 유지되므로 새로고침하면 초기화된다.
 - `renderQuestion()`은 선택지 버튼을 새로 만들고 문제별 UI를 초기화한다. 초기 실행에서는 포커스를 옮기지 않고, 다음 문제와 재시작에서는 `renderQuestion(true)`를 사용한다.
 - `selectAnswer()`는 중복 응답을 차단하고 점수, 선택지 상태, 해설, 진행률, 다음 버튼을 갱신한다.
 - `showResults()`는 `hidden`으로 퀴즈와 결과 화면을 전환한다. 재시작 핸들러가 공통 상태와 진행률을 초기화한다.
+- 회차 순서와 상태 흐름의 회귀 테스트는 외부 의존성 없이 `node --test tests/quiz.test.cjs`로 실행한다.
 
 ## 변경 시 함께 맞춰야 하는 규칙
 
